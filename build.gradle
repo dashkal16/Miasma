@@ -1,0 +1,275 @@
+// Buildscript Setup
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+// Miasma
+version = "${mod_version}"
+group = "${mod_group}"
+archivesBaseName = "${mod_id}"
+
+sourceSets {
+    // Public API for Miasma.
+    api {
+        resources.srcDirs = []
+    }
+    // Library of common code for other modules.
+    lib {
+        resources.srcDirs = []
+    }
+    // Main source for Miasma
+    main {
+        compileClasspath += api.output
+        compileClasspath += lib.output
+        runtimeClasspath += api.output
+        runtimeClasspath += lib.output
+        // resources { srcDir 'src/generated/resources' }
+    }
+    // Integrations module that makes use of external mods.
+    integration {
+        compileClasspath += api.output
+        compileClasspath += lib.output
+        runtimeClasspath += main.output
+    }
+    // Test mod used to manually test the API. Neither built into a jar nor published.
+    testmod {
+        compileClasspath += api.output
+        compileClasspath += lib.output
+        runtimeClasspath += main.output
+    }
+}
+
+// Ensure that all non-main sourceSets inherit the core dependencies (e.g. forge).
+configurations {
+    // All sourceSets except main
+    def configs = [api, lib, integration, testmod]
+    for (def config : configs) {
+        logger.info("Extending " + config.getName())
+        getByName(config.getName() + "Compile").extendsFrom(compile)
+        getByName(config.getName() + "Implementation").extendsFrom(implementation)
+        getByName(config.getName() + "CompileOnly").extendsFrom(compileOnly)
+        getByName(config.getName() + "RuntimeOnly").extendsFrom(runtimeOnly)
+    }
+}
+
+// Mojang ships Java 8 for MC 1.16
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+minecraft {
+    // You must be aware of the Mojang license when using the 'official' mappings.
+    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory file('run')
+
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                miasma.sources((SourceSet[]) [sourceSets.main, sourceSets.lib, sourceSets.api])
+                miasma_integration.sources((SourceSet) sourceSets.integration)
+                miasma_test.source((SourceSet) sourceSets.testmod)
+            }
+        }
+
+        server {
+            workingDirectory file('run')
+
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                miasma.sources((SourceSet[]) [sourceSets.main, sourceSets.lib, sourceSets.api])
+                miasma_integration.sources((SourceSet) sourceSets.integration)
+                miasma_test.source((SourceSet) sourceSets.testmod)
+            }
+        }
+
+/*
+        // Uncomment this if we start using data generation
+        data {
+            workingDirectory file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                miasma.sources((SourceSet[]) [sourceSets.main, sourceSets.lib, sourceSets.api])
+                miasma_integration.sources((SourceSet) sourceSets.integration)
+                miasma_test.source((SourceSet) sourceSets.testmod)
+            }
+        }
+*/
+    }
+}
+
+// Dependency Repositories
+repositories {
+    maven {
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+//    maven {
+//        url "https://www.cursemaven.com"
+//        content {
+//            includeGroup "curse.maven"
+//        }
+//    }
+}
+
+// Mod Dependencies
+dependencies {
+    // Minecraft Forge
+    minecraft "net.minecraftforge:forge:${version_mc}-${version_forge}"
+
+    // Curios
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${version_curios}")
+
+    // Mods pulled in for a sane local testing environment
+    // Note that these mods must already be de-obfuscated to the same mappings we use
+    runtimeOnly(fileTree('local-deobf') { include '*.jar'} )
+}
+
+reobf {
+    apiJar { classpath = sourceSets.api.compileClasspath }
+    jar { classpath = sourceSets.main.compileClasspath }
+    integrationJar { classpath = sourceSets.integration.compileClasspath }
+}
+
+// Main Jar
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "${mod_name}",
+            "Specification-Vendor": "${mod_author}",
+            "Specification-Version": archiveVersion,
+            "Implementation-Title": "${mod_name}",
+            "Implementation-Version": archiveVersion,
+            "Implementation-Vendor" : "${mod_author}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    from sourceSets.api.output
+    from sourceSets.lib.output
+    from sourceSets.main.output
+    afterEvaluate { finalizedBy reobfJar }
+}
+
+// De-obfuscated Jar (Not produced by default)
+task deobfJar(type: Jar) {
+    archiveClassifier.set("deobf-${mappings_channel}-${mappings_version}")
+    from sourceSets.api.output
+    from sourceSets.main.output
+    manifest = jar.manifest
+}
+
+// API Jar
+task apiJar(type: Jar) {
+    archiveClassifier.set('api')
+    include 'name/dashkal/minecraft/miasma/api/**/*'
+    from sourceSets.api.allSource
+    from sourceSets.api.output
+    manifest = jar.manifest
+    afterEvaluate { finalizedBy reobfApiJar }
+}
+
+// Sources Jar
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.api.allJava
+    from sourceSets.lib.allJava
+    from sourceSets.main.allJava
+    manifest = jar.manifest
+}
+
+// Integrations Mod Jar
+task integrationJar(type: Jar) {
+    archiveClassifier.set('integration')
+    from sourceSets.integration.output
+    afterEvaluate { finalizedBy reobfIntegrationJar }
+}
+
+tasks.build.dependsOn apiJar, sourcesJar, integrationJar
+
+def modsTomlVariables = ['version': project.version,
+                         'mod_id': mod_id,
+                         'mod_name': mod_name,
+                         'mod_url': mod_url,
+                         'mod_author': mod_author,
+                         'mod_description': mod_description,
+                         'mod_icon': mod_icon,
+                         'version_curios': version_curios]
+
+// Allow variable expansions in mods.toml
+// TODO figure out a way to do this in a loop like with configurations
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand modsTomlVariables
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+processIntegrationResources {
+    from(sourceSets.integration.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand modsTomlVariables
+    }
+    from(sourceSets.integration.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+processTestmodResources {
+    from(sourceSets.testmod.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand modsTomlVariables
+    }
+    from(sourceSets.testmod.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+
+// Maven Publishing
+// For now, local only.
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+/*
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+*/
+}

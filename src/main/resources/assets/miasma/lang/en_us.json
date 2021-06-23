@@ -1,0 +1,22 @@
+{
+  "commands.miasma.failure.no_cap": "%s does not have the IMiasmaHandler capability.",
+  "commands.miasma.failure.not_living": "%s is not alive.",
+  "commands.miasma.infect.success": "%s has been infected with the miasma at stage %s.",
+  "commands.miasma.infect.failure.immune": "%s cannot be infected with the miasma.",
+  "commands.miasma.cleanse.success": "%s has been cleansed of the miasma.",
+
+  "miasma.message.warning": "You feel ill in the sunlight.",
+  "miasma.message.harming": "The sunlight burns!",
+  "miasma.message.killing": "The sunlight is killing you!",
+
+  "miasma.stage.warning": "Warning",
+  "miasma.stage.harming": "Harming",
+  "miasma.stage.killing": "Killing",
+
+  "effect.miasma.miasma": "Miasma",
+  "death.attack.miasma_harm": "%s succumbed to the Miasma",
+  "death.attack.miasma_kill": "%s was consumed by the Miasma",
+
+  "attribute.name.miasma.infection_rate": "Infection Rate",
+  "attribute.name.miasma.cleansing_rate": "Cleansing Rate"
+}

@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+#issueTrackerURL="https://www.example.com/issues/"
+
+[[mods]]
+    modId="${mod_id}_integration"
+    version="${version}"
+    displayName="${mod_name} Integration"
+    authors="${mod_author}"
+    description='''
+Provides ${mod_name} integration with other mods.
+'''
+
+# Integration is always lock-step attached to Miasma proper
+[[dependencies.${mod_id}_integration]]
+    modId="${mod_id}"
+    mandatory=true
+    versionRange="[${version}]"
+    ordering="NONE"
+    side="BOTH"
+
+# Curios API (Forge)
+# https://www.curseforge.com/minecraft/mc-mods/curios
+[[dependencies.${mod_id}_integration]]
+    modId="curios"
+    mandatory=false
+    versionRange="[${version_curios},)"
+    ordering="AFTER"
+    side="BOTH"

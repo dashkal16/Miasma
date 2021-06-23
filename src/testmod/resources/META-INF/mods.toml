@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+#issueTrackerURL="https://www.example.com/issues/"
+
+[[mods]]
+modId="miasma_test"
+version="${version}"
+displayName="Miasma Test"
+authors="${mod_author}"
+description='''
+Test addon for Miasma that contributes protective items and event handlers that make anybody holding a stick immune.
+'''
+[[dependencies.miasma_test]]
+modId="miasma"
+mandatory=true
+versionRange="[${version},)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.miasma_test]]
+modId="curios"
+mandatory=true
+versionRange="[${version_curios},)"
+ordering="NONE"
+side="BOTH"
