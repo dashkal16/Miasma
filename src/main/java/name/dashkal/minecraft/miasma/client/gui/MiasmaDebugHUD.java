@@ -41,8 +41,6 @@ import java.util.List;
  */
 public class MiasmaDebugHUD extends AbstractGui {
     private static final Minecraft minecraft = Minecraft.getInstance();
-    // TODO get this sprite added to the potion atlas.
-    private static final MiasmaSprite effectSprite = new MiasmaSprite(new ResourceLocation(MiasmaMod.MODID, "textures/mob_effect/miasma_real.png"), 16, 16);
     private static final Color FADED_GREY = Colors.DARK_GREY.withAlpha(0.5f);
 
     public void render(MatrixStack mStack, PlayerEntity player, IMiasmaHandler miasmaHandler) {
