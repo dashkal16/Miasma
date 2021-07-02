@@ -22,17 +22,12 @@ import name.dashkal.minecraft.miasma.api.MiasmaAPI;
 import name.dashkal.minecraft.miasma.api.capability.IMiasmaModifier;
 import name.dashkal.minecraft.miasma.api.property.MiasmaPropertyModifierType;
 import name.dashkal.minecraft.miasma.api.property.MiasmaPropertyModifiers;
-import name.dashkal.minecraft.miasma.client.armor.MaskArmorModel;
-import name.dashkal.minecraft.miasma.common.capability.MiasmaModifierCapability;
+import name.dashkal.minecraft.miasma.api.capability.PropertyOnlyMiasmaModifier;
 import name.dashkal.minecraft.miasma.common.material.ClothMaskArmorMaterial;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.NonNullSupplier;
 import org.apache.commons.lang3.math.Fraction;
@@ -76,7 +71,7 @@ public class MaskItem extends ArmorItem {
      * @param modifiers the miasma property modifiers this mask applies to infections
      */
     public MaskItem(ResourceLocation registryName, IArmorMaterial armorMaterial, MiasmaPropertyModifiers modifiers) {
-        this(registryName, armorMaterial, () -> new MiasmaModifierCapability.SimpleMiasmaModifier(modifiers));
+        this(registryName, armorMaterial, () -> new PropertyOnlyMiasmaModifier(modifiers));
     }
 
     @Nullable

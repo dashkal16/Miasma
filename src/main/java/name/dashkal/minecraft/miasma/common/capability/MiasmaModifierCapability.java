@@ -18,9 +18,8 @@
 package name.dashkal.minecraft.miasma.common.capability;
 
 import name.dashkal.minecraft.miasma.MiasmaMod;
-import name.dashkal.minecraft.miasma.api.IInfection;
-import name.dashkal.minecraft.miasma.api.InfectionStage;
 import name.dashkal.minecraft.miasma.api.capability.IMiasmaModifier;
+import name.dashkal.minecraft.miasma.api.capability.PropertyOnlyMiasmaModifier;
 import name.dashkal.minecraft.miasma.api.imc.MiasmaModifierLocator;
 import name.dashkal.minecraft.miasma.api.property.MiasmaPropertyModifiers;
 import name.dashkal.minecraft.miasma.lib.capability.SimpleCapabilityProvider;
@@ -55,7 +54,7 @@ public class MiasmaModifierCapability {
 
     /** Called to register the {@link IMiasmaModifier} capability. */
     public static void register() {
-        CapabilityManager.INSTANCE.register(IMiasmaModifier.class, new DefaultStorage(), () -> new SimpleMiasmaModifier(MiasmaPropertyModifiers.empty()));
+        CapabilityManager.INSTANCE.register(IMiasmaModifier.class, new DefaultStorage(), () -> new PropertyOnlyMiasmaModifier(MiasmaPropertyModifiers.empty()));
     }
 
     /**
@@ -126,7 +125,7 @@ public class MiasmaModifierCapability {
      */
     @Nonnull
     public static ICapabilityProvider fromModifiers(MiasmaPropertyModifiers modifiers) {
-        return new SimpleCapabilityProvider<>(() -> MiasmaModifierCapability.CAPABILITY, () -> new SimpleMiasmaModifier(modifiers));
+        return new SimpleCapabilityProvider<>(() -> MiasmaModifierCapability.CAPABILITY, () -> new PropertyOnlyMiasmaModifier(modifiers));
     }
 
     /**
@@ -197,32 +196,4 @@ public class MiasmaModifierCapability {
         public void readNBT(Capability<IMiasmaModifier> capability, IMiasmaModifier instance, Direction side, INBT nbt) { }
     }
 
-    public static class SimpleMiasmaModifier implements IMiasmaModifier {
-        private final MiasmaPropertyModifiers modifiers;
-
-        public SimpleMiasmaModifier(MiasmaPropertyModifiers modifiers) {
-            this.modifiers = modifiers;
-        }
-
-        @Override
-        public boolean checkApply(LivingEntity entity, InfectionStage stage, boolean forced) {
-            return true;
-        }
-
-        @Override
-        public boolean checkPulse(LivingEntity entity, IInfection infection) {
-            return true;
-        }
-
-        @Override
-        public boolean checkKill(LivingEntity entity, IInfection infection) {
-            return true;
-        }
-
-        @Nonnull
-        @Override
-        public MiasmaPropertyModifiers getPropertyModifiers() {
-            return modifiers;
-        }
-    }
 }
