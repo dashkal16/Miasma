@@ -15,26 +15,18 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration;
+package name.dashkal.minecraft.miasma.integration.client;
 
-import name.dashkal.minecraft.miasma.api.imc.MiasmaModifierLocator;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class Integrations {
-    public static final Integrations INSTANCE = new Integrations();
-
-    private Integrations() {
-        curiosIntegration = new ModLoadedReference<>("curios", CuriosIntegration::new);
+public class ClientSetup {
+    public static void init() {
+        ClientIntegrations.init();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onFMLClientSetupEvent);
     }
 
-    private final ModLoadedReference<CuriosIntegration> curiosIntegration;
-
-    public List<MiasmaModifierLocator> getMiasmaModifierLocators() {
-        List<MiasmaModifierLocator> locators = new LinkedList<>();
-        curiosIntegration.callWithIntegration(CuriosIntegration::getMiasmaModifierLocator).ifPresent(locators::add);
-        return locators;
+    public static void onFMLClientSetupEvent(FMLClientSetupEvent event) {
+        ClientIntegrations.INSTANCE.onClientSetup(event);
     }
 }

@@ -15,15 +15,18 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration;
+package name.dashkal.minecraft.miasma.integration.common;
 
 import name.dashkal.minecraft.miasma.api.MiasmaAPI;
 import name.dashkal.minecraft.miasma.api.capability.IMiasmaModifier;
 import name.dashkal.minecraft.miasma.api.imc.MiasmaModifierLocator;
+import name.dashkal.minecraft.miasma.integration.MiasmaIntegrationMod;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.InterModComms;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
@@ -37,6 +40,14 @@ import java.util.Map;
  * https://www.curseforge.com/minecraft/mc-mods/curios
  */
 class CuriosIntegration {
+    private static final ResourceLocation MASK_SLOT_SPRITE = new ResourceLocation(MiasmaIntegrationMod.MODID, "item/mask_slot");
+
+    public void setupCurioSlots() {
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () ->
+                new SlotTypeMessage.Builder("mask").size(1).icon(MASK_SLOT_SPRITE).build()
+        );
+    }
+
     public MiasmaModifierLocator getMiasmaModifierLocator() {
         return new MiasmaModifierLocator(
                 new ResourceLocation(MiasmaIntegrationMod.MODID, "mod_curios"),

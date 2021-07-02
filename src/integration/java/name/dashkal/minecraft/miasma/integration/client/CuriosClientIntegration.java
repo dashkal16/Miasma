@@ -15,31 +15,25 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration;
+package name.dashkal.minecraft.miasma.integration.client;
 
-import name.dashkal.minecraft.miasma.integration.client.ClientSetup;
-import name.dashkal.minecraft.miasma.integration.common.CommonSetup;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import name.dashkal.minecraft.miasma.integration.MiasmaIntegrationMod;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-/**
- * Internal companion mod for Miasma that handles external mod integrations.
- */
-@Mod(MiasmaIntegrationMod.MODID)
-public class MiasmaIntegrationMod {
-    public static final String MODID = "miasma_integration";
-    private static final Logger LOGGER = LogManager.getLogger(MODID);
+public class CuriosClientIntegration {
+    private static final ResourceLocation MASK_SLOT_SPRITE = new ResourceLocation(MiasmaIntegrationMod.MODID, "item/mask_slot");
 
-    public MiasmaIntegrationMod() {
-        LOGGER.info("Mod Initialization");
+    public void onClientSetup(FMLClientSetupEvent event) {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPreTextureStitchEvent);
+    }
 
-        // Common setup
-        CommonSetup.init();
-
-        // Client Setup
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientSetup::init);
+    private void onPreTextureStitchEvent(TextureStitchEvent.Pre event) {
+        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
+            event.addSprite(MASK_SLOT_SPRITE);
+        }
     }
 }
