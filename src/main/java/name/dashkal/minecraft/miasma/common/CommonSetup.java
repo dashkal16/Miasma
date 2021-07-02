@@ -25,7 +25,9 @@ import name.dashkal.minecraft.miasma.common.command.MiasmaCommand;
 import name.dashkal.minecraft.miasma.common.effect.MiasmaEffect;
 import name.dashkal.minecraft.miasma.common.event.MiasmaEventHandlers;
 import name.dashkal.minecraft.miasma.common.imc.IMCHandler;
+import name.dashkal.minecraft.miasma.common.item.MaskItem;
 import name.dashkal.minecraft.miasma.common.network.MiasmaChannel;
+import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -58,6 +60,7 @@ public class CommonSetup {
 
         // Registration events
         modEventBus.addGenericListener(Effect.class, CommonSetup::registerEffects);
+        modEventBus.addGenericListener(Item.class, CommonSetup::registerItems);
 
         // Event handlers
         registerEventHandlers();
@@ -92,8 +95,13 @@ public class CommonSetup {
     }
 
     /** Registers the Miasma effect */
-    private static void registerEffects(RegistryEvent.Register<Effect> ev) {
-        ev.getRegistry().register(MiasmaEffect.INSTANCE);
+    private static void registerEffects(RegistryEvent.Register<Effect> event) {
+        event.getRegistry().register(MiasmaEffect.INSTANCE);
+    }
+
+    /** Registers the Miasma items */
+    private static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(MaskItem.CLOTH_MASK);
     }
 
     /** Registers all event handlers */

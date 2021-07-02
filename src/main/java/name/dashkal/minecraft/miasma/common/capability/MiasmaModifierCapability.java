@@ -197,7 +197,7 @@ public class MiasmaModifierCapability {
         public void readNBT(Capability<IMiasmaModifier> capability, IMiasmaModifier instance, Direction side, INBT nbt) { }
     }
 
-    private static class SimpleMiasmaModifier implements IMiasmaModifier {
+    public static class SimpleMiasmaModifier implements IMiasmaModifier {
         private final MiasmaPropertyModifiers modifiers;
 
         public SimpleMiasmaModifier(MiasmaPropertyModifiers modifiers) {

@@ -17,6 +17,8 @@
   "death.attack.miasma_harm": "%s succumbed to the Miasma",
   "death.attack.miasma_kill": "%s was consumed by the Miasma",
 
+  "item.miasma.cloth_mask": "Cloth Mask",
+
   "attribute.name.miasma.infection_rate": "Infection Rate",
   "attribute.name.miasma.cleansing_rate": "Cleansing Rate"
 }
