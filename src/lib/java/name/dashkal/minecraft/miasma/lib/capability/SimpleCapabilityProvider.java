@@ -67,6 +67,9 @@ public class SimpleCapabilityProvider<T> implements ICapabilityProvider {
         }
     }
 
+    /**
+     * Invalidates this capability provider.
+     */
     public void invalidate() {
         handler.invalidate();
     }
