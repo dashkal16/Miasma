@@ -18,6 +18,7 @@
 package name.dashkal.minecraft.miasma.integration.common;
 
 import name.dashkal.minecraft.miasma.api.imc.MiasmaModifierLocator;
+import name.dashkal.minecraft.miasma.integration.common.curios.CuriosIntegration;
 import name.dashkal.minecraft.miasma.lib.ModLoadedReference;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
@@ -26,10 +27,6 @@ import java.util.List;
 
 public class Integrations {
     public static final Integrations INSTANCE = new Integrations();
-
-    public static void init() {
-        // Does nothing, but calling it causes the class to initialize
-    }
 
     private final ModLoadedReference<CuriosIntegration> curiosIntegration;
 

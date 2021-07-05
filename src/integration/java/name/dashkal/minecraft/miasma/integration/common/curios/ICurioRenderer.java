@@ -15,25 +15,30 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration.client;
+package name.dashkal.minecraft.miasma.integration.common.curios;
 
-import name.dashkal.minecraft.miasma.integration.MiasmaIntegrationMod;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.LivingEntity;
 
-public class CuriosClientIntegration {
-    private static final ResourceLocation MASK_SLOT_SPRITE = new ResourceLocation(MiasmaIntegrationMod.MODID, "item/mask_slot");
-
-    public void onClientSetup(FMLClientSetupEvent event) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPreTextureStitchEvent);
-    }
-
-    private void onPreTextureStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
-            event.addSprite(MASK_SLOT_SPRITE);
-        }
-    }
+/**
+ * Helper interface to proxy the actual rendering of an ICurio over to the client package, where it's safe to work with
+ * client only classes and methods.
+ */
+public interface ICurioRenderer {
+    /**
+     * Called from an implementation of {@link top.theillusivec4.curios.api.type.capability.ICurio#render(String, int, MatrixStack, IRenderTypeBuffer, int, LivingEntity, float, float, float, float, float, float)}.
+     */
+    void render(String identifier,
+                int index,
+                MatrixStack matrixStack,
+                IRenderTypeBuffer renderTypeBuffer,
+                int packedLightCoords,
+                LivingEntity livingEntity,
+                float limbSwing,
+                float limbSwingAmount,
+                float partialTicks,
+                float ageInTicks,
+                float netHeadYaw,
+                float headPitch);
 }

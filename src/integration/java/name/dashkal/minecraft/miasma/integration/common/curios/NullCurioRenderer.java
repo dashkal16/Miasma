@@ -15,22 +15,21 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration.client;
+package name.dashkal.minecraft.miasma.integration.common.curios;
 
-import name.dashkal.minecraft.miasma.integration.client.curios.CuriosClientIntegration;
-import name.dashkal.minecraft.miasma.lib.ModLoadedReference;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.LivingEntity;
 
-public class ClientIntegrations {
-    public static final ClientIntegrations INSTANCE = new ClientIntegrations();
+import java.util.function.Supplier;
 
-    private final ModLoadedReference<CuriosClientIntegration> curiosIntegration;
-
-    public ClientIntegrations() {
-        curiosIntegration = new ModLoadedReference<>("curios", () -> CuriosClientIntegration::new);
-    }
-
-    public void onClientSetup(FMLClientSetupEvent event) {
-        curiosIntegration.withIntegration(i -> i.onClientSetup(event));
-    }
+/**
+ * {@link ICurioRenderer} implementation that does nothing.
+ * <p>
+ *     For use with {@link net.minecraftforge.fml.DistExecutor#safeRunForDist(Supplier, Supplier)}.
+ * </p>
+ */
+public class NullCurioRenderer implements ICurioRenderer {
+    @Override
+    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int packedLightCoords, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {}
 }

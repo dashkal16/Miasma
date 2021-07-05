@@ -15,22 +15,33 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package name.dashkal.minecraft.miasma.integration.client;
+package name.dashkal.minecraft.miasma.lib;
 
-import name.dashkal.minecraft.miasma.integration.client.curios.CuriosClientIntegration;
-import name.dashkal.minecraft.miasma.lib.ModLoadedReference;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class ClientIntegrations {
-    public static final ClientIntegrations INSTANCE = new ClientIntegrations();
-
-    private final ModLoadedReference<CuriosClientIntegration> curiosIntegration;
-
-    public ClientIntegrations() {
-        curiosIntegration = new ModLoadedReference<>("curios", () -> CuriosClientIntegration::new);
+/** Utility class for {@link Optional} type casting. */
+public class CastUtils {
+    public static <A, B> Optional<B> optCast(Class<B> expectedClass, A a) {
+        if (expectedClass.isAssignableFrom(a.getClass())) {
+            return Optional.of(expectedClass.cast(a));
+        }
+        return Optional.empty();
     }
 
-    public void onClientSetup(FMLClientSetupEvent event) {
-        curiosIntegration.withIntegration(i -> i.onClientSetup(event));
+    public static <A, B> void ifCast(Class<B> expectedClass, A a, Consumer<B> consumer) {
+        if (expectedClass.isAssignableFrom(a.getClass())) {
+            consumer.accept(expectedClass.cast(a));
+        }
+    }
+
+    public static <A, B, C> C foldCast(Class<B> expectedClass, A a, Function<B, C> function, Supplier<C> defaultSupplier) {
+        if (expectedClass.isAssignableFrom(a.getClass())) {
+            return function.apply(expectedClass.cast(a));
+        } else {
+            return defaultSupplier.get();
+        }
     }
 }

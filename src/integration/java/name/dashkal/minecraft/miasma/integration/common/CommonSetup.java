@@ -30,9 +30,6 @@ public class CommonSetup {
     private static final Logger LOGGER = LogManager.getLogger(MiasmaIntegrationMod.MODID);
 
     public static void init() {
-        // Initialize the integrations
-        Integrations.init();
-
         // Lifecycle events
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonSetup::onInterModEnqueueEvent);
     }

@@ -22,7 +22,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ClientSetup {
     public static void init() {
-        ClientIntegrations.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onFMLClientSetupEvent);
     }
 
